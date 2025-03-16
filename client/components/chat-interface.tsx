@@ -1,56 +1,57 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { Send, Mic, User, Bot, Sparkles, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-
+import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Send, Mic, User, Sparkles, X } from "lucide-react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 type Message = {
-  id: string
-  content: string
-  sender: "user" | "bot"
-  timestamp: Date
-}
+  id: string;
+  content: string;
+  sender: "user" | "bot";
+  timestamp: Date;
+};
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your Blueprint AI assistant. How can I help optimize your health and longevity today?",
+      content:
+        "Hello! I'm your Blueprint AI assistant. How can I help optimize your health and longevity today?",
       sender: "bot",
       timestamp: new Date(),
     },
-  ])
-  const [inputValue, setInputValue] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [showWelcome, setShowWelcome] = useState(false)
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = () => {
-    if (inputValue.trim() === "") return
+    if (inputValue.trim() === "") return;
 
     const newUserMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
       sender: "user",
       timestamp: new Date(),
-    }
+    };
 
-    setMessages((prev) => [...prev, newUserMessage])
-    setInputValue("")
-    setIsTyping(true)
+    setMessages((prev) => [...prev, newUserMessage]);
+    setInputValue("");
+    setIsTyping(true);
 
     // Simulate bot response after a delay
     setTimeout(() => {
@@ -59,54 +60,37 @@ export default function ChatInterface() {
         "Your sleep optimization could benefit from reducing blue light exposure 2 hours before bedtime.",
         "I've analyzed your data and suggest adding a NAD+ supplement to your regimen for cellular health.",
         "Your current exercise pattern shows good cardiovascular engagement, but could use more resistance training for longevity benefits.",
-      ]
+      ];
 
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)]
+      const randomResponse =
+        botResponses[Math.floor(Math.random() * botResponses.length)];
 
       const newBotMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: randomResponse,
         sender: "bot",
         timestamp: new Date(),
-      }
+      };
 
-      setMessages((prev) => [...prev, newBotMessage])
-      setIsTyping(false)
-    }, 1500)
-  }
+      setMessages((prev) => [...prev, newBotMessage]);
+      setIsTyping(false);
+    }, 1500);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSendMessage()
+      handleSendMessage();
     }
-  }
+  };
 
   return (
     <div className="relative w-full h-[80vh] rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden">
       <div className="absolute inset-0 opacity-10 z-0">
         <img
-          src="https://i.pinimg.com/736x/ad/90/5c/ad905c46f299a8929d8622e7d0c872df.jpg"
+          src="https://media.licdn.com/dms/image/v2/D5603AQHvuxvFeVZQxw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1719601839873?e=1747872000&v=beta&t=DQxK5h-Slm-x-YR_WcQkFuPcZURapNcjKH2SI_aAJss"
           alt="Blueprint Tech Background"
           className="w-full h-full object-cover"
         />
-      </div>
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 bg-navy-900 text-white p-4 flex items-center justify-between z-10">
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Sparkles className="h-6 w-6 text-cyan-400" />
-            <motion.div
-              className="absolute -inset-1 rounded-full bg-cyan-400/20"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            />
-          </div>
-          <h1 className="text-xl font-bold">Blueprint Chat</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-sm text-slate-300">AI Active</span>
-        </div>
       </div>
 
       {/* Welcome overlay */}
@@ -149,10 +133,15 @@ export default function ChatInterface() {
               transition={{ delay: 0.6 }}
               className="text-center text-slate-300 max-w-md mb-8"
             >
-              Your personal health optimization assistant powered by science and data-driven insights
+              Your personal health optimization assistant powered by science and
+              data-driven insights
             </motion.p>
 
-            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
               <Button
                 onClick={() => setShowWelcome(false)}
                 className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-8 py-6 rounded-xl"
@@ -185,29 +174,48 @@ export default function ChatInterface() {
               transition={{ duration: 0.3 }}
               className={cn(
                 "flex items-start gap-3",
-                message.sender === "user" ? "ml-auto max-w-[85%] justify-end" : "mr-auto max-w-[85%]",
+                message.sender === "user"
+                  ? "ml-auto max-w-[85%] justify-end"
+                  : "mr-auto max-w-[85%]"
               )}
             >
               <div
                 className={cn(
                   "flex items-center justify-center h-8 w-8 rounded-full shrink-0",
-                  message.sender === "user" ? "bg-blue-600 order-2" : "bg-navy-900 order-1",
+                  message.sender === "user"
+                    ? "bg-blue-600 order-2"
+                    : "bg-transparent order-1"
                 )}
               >
                 {message.sender === "user" ? (
                   <User className="h-5 w-5 text-white" />
                 ) : (
-                  <Bot className="h-5 w-5 text-cyan-400" />
+                  <Image
+                    src="/image.png"
+                    alt="AI Assistant"
+                    width={32}
+                    height={32}
+                    className="rounded-full object-cover"
+                  />
                 )}
               </div>
               <div
                 className={cn(
                   "rounded-2xl px-4 py-3",
-                  message.sender === "user" ? "bg-blue-600 text-white order-1" : "bg-slate-100 text-navy-900 order-2",
+                  message.sender === "user"
+                    ? "bg-blue-600 text-white order-1"
+                    : "bg-slate-100 text-navy-900 order-2"
                 )}
               >
                 <p>{message.content}</p>
-                <p className={cn("text-xs mt-1", message.sender === "user" ? "text-blue-200" : "text-slate-500")}>
+                <p
+                  className={cn(
+                    "text-xs mt-1",
+                    message.sender === "user"
+                      ? "text-blue-200"
+                      : "text-slate-500"
+                  )}
+                >
                   {message.timestamp.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -222,25 +230,43 @@ export default function ChatInterface() {
               animate={{ opacity: 1, y: 0 }}
               className="flex items-start gap-3 max-w-[85%] mr-auto"
             >
-              <div className="flex items-center justify-center h-8 w-8 rounded-full shrink-0 bg-navy-900">
-                <Bot className="h-5 w-5 text-cyan-400" />
+              <div className="flex items-center justify-center h-8 w-8 rounded-full shrink-0 bg-transparent">
+                <Image
+                  src="/bot-avatar.png"
+                  alt="AI Assistant"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
+                />
               </div>
               <div className="rounded-2xl px-4 py-3 bg-slate-100 text-navy-900">
                 <div className="flex gap-1">
                   <motion.div
                     className="h-2 w-2 rounded-full bg-slate-400"
                     animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 0.8, repeat: Number.POSITIVE_INFINITY, delay: 0 }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      delay: 0,
+                    }}
                   />
                   <motion.div
                     className="h-2 w-2 rounded-full bg-slate-400"
                     animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 0.8, repeat: Number.POSITIVE_INFINITY, delay: 0.2 }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      delay: 0.2,
+                    }}
                   />
                   <motion.div
                     className="h-2 w-2 rounded-full bg-slate-400"
                     animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 0.8, repeat: Number.POSITIVE_INFINITY, delay: 0.4 }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      delay: 0.4,
+                    }}
                   />
                 </div>
               </div>
@@ -268,12 +294,13 @@ export default function ChatInterface() {
             <Send className="h-5 w-5" />
           </Button>
         </div>
-        <div className="mt-2 text-xs text-slate-500 flex items-center gap-1">
+        <div className="mt-2 text-xs text-slate-500 flex items-center justify-center gap-1">
           <div className="h-1 w-1 rounded-full bg-cyan-500 animate-pulse" />
-          <span>Blueprint AI is optimized for health and longevity insights</span>
+          <span>
+            Blueprint AI is optimized for health and longevity insights
+          </span>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
