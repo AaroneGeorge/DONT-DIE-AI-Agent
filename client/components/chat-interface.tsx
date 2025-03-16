@@ -267,9 +267,6 @@ export default function ChatInterface() {
           >
             <Send className="h-5 w-5" />
           </Button>
-          <Button variant="outline" className="border-slate-200">
-            <Mic className="h-5 w-5 text-slate-500" />
-          </Button>
         </div>
         <div className="mt-2 text-xs text-slate-500 flex items-center gap-1">
           <div className="h-1 w-1 rounded-full bg-cyan-500 animate-pulse" />
