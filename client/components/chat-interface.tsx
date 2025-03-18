@@ -232,7 +232,7 @@ export default function ChatInterface() {
             >
               <div className="flex items-center justify-center h-8 w-8 rounded-full shrink-0 bg-transparent">
                 <Image
-                  src="/bot-avatar.png"
+                  src="/image.png"
                   alt="AI Assistant"
                   width={32}
                   height={32}
