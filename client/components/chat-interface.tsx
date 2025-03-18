@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Send, Mic, User, Sparkles, X } from "lucide-react";
+import { Send, User, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,18 @@ export default function ChatInterface() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+  
+  useEffect(() => {
+    // Generate a random session ID when the component mounts
+    const generateSessionId = () => {
+      return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function() {
+        return (Math.random() * 16 | 0).toString(16);
+      });
+    };
+    
+    setSessionId(generateSessionId());
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,7 +51,7 @@ export default function ChatInterface() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputValue.trim() === "") return;
 
     const newUserMessage: Message = {
@@ -53,28 +65,53 @@ export default function ChatInterface() {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate bot response after a delay
-    setTimeout(() => {
-      const botResponses = [
-        "Based on your biomarkers, I recommend increasing your daily protein intake to 1.6g per kg of body weight.",
-        "Your sleep optimization could benefit from reducing blue light exposure 2 hours before bedtime.",
-        "I've analyzed your data and suggest adding a NAD+ supplement to your regimen for cellular health.",
-        "Your current exercise pattern shows good cardiovascular engagement, but could use more resistance training for longevity benefits.",
-      ];
+    try {
+      // Make API call to backend
+      if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+        throw new Error('Backend URL is not defined');
+      }
 
-      const randomResponse =
-        botResponses[Math.floor(Math.random() * botResponses.length)];
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: inputValue,
+          userId: sessionId
+        })
+      });
 
-      const newBotMessage: Message = {
+      const data = await response.json();
+      
+      // Use the first response from the array
+      if (data && data.length > 0) {
+        const botResponse = data[0];
+        
+        const newBotMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: botResponse.text,
+          sender: "bot",
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, newBotMessage]);
+      }
+    } catch (error) {
+      console.error('Error fetching response:', error);
+      
+      // Add error message
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: randomResponse,
+        content: "Sorry, there was an error connecting to the assistant. Please try again later.",
         sender: "bot",
         timestamp: new Date(),
       };
-
-      setMessages((prev) => [...prev, newBotMessage]);
+      
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
