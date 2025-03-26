@@ -14,10 +14,10 @@ export default function Home() {
       </div>
       <div className="flex items-center gap-4 mb-12">
         <h1 className="text-6xl font-bold text-white tracking-tight hover:scale-105 transition-transform duration-300 drop-shadow-glow animate-pulse-slow">
-          DON'T DIE
+          DON&apos;T DIE
         </h1>
         <span className="text-xl text-gray-200 tracking-wide font-light opacity-90 hover:opacity-100 transition-opacity border-l border-gray-500 pl-4">
-          Your AI Health Oracle | Unlock Bryan Johnson's Longevity Secrets 🧬
+          Your AI Health Oracle | Unlock Bryan Johnson&apos;s Longevity Secrets 🧬
         </span>
       </div>
       <div className="container max-w-5xl px-4 relative z-10">
